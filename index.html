@@ -123,8 +123,10 @@
 </head>
 <body class="bg-stone-900 text-stone-800 antialiased selection:bg-amber-100">
 
-  <!-- PLAYER LAGU YOUTUBE (TERSEMBUNYI) -->
-  <iframe id="bgMusic" class="hidden" src="" allow="autoplay"></iframe>
+  <!-- PLAYER AUDIO MP3 (TERSEMBUNYI) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="input_file_0.png" type="audio/mp3">
+  </audio>
 
   <!-- BUTANG KAWALAN MUZIK (FLOATING BUTTON) -->
   <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-50 w-11 h-11 bg-amber-800/80 hover:bg-amber-800 text-amber-100 rounded-full shadow-lg border border-amber-400/40 flex items-center justify-center backdrop-blur-md transition-all">
@@ -369,7 +371,6 @@
 
   <!-- JavaScript Logic -->
   <script>
-    const musicUrl = "https://www.youtube.com/embed/19StO6rP_Q8?autoplay=1&loop=1&playlist=19StO6rP_Q8";
     let isPlaying = false;
 
     // Fungsi Buka Cover Page & Smooth Zoom Transition Ke Main Page
@@ -394,21 +395,24 @@
       playMusic();
     }
 
-    // Fungsi Kawalan Muzik
+    // Fungsi Kawalan Muzik menggunakan HTML5 Audio API
     function playMusic() {
-      const musicFrame = document.getElementById("bgMusic");
+      const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
-      musicFrame.src = musicUrl;
-      isPlaying = true;
-      musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+      audio.play().then(() => {
+        isPlaying = true;
+        musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+      }).catch(error => {
+        console.log("Autoplay tercegah:", error);
+      });
     }
 
     function toggleMusic() {
-      const musicFrame = document.getElementById("bgMusic");
+      const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
 
       if (isPlaying) {
-        musicFrame.src = "";
+        audio.pause();
         isPlaying = false;
         musicIcon.className = "fa-solid fa-volume-xmark text-sm";
       } else {
