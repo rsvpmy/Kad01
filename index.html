@@ -369,8 +369,8 @@
 
   <!-- JavaScript Logic -->
   <script>
-    const musicUrl = "https://www.youtube.com/watch?v=vbrNKsDU0UM&list=RDvbrNKsDU0UM&start_radio=1";
-    let isPlaying = false;
+    const musicUrl = "https://www.youtube.com/watch?v=P6pRWaNFrfI&list=RDP6pRWaNFrfI&start_radio=1";
+    let isPlaying = true;
 
     // Fungsi Buka Cover Page & Smooth Zoom Transition Ke Main Page
     function bukaKad() {
@@ -409,7 +409,7 @@
 
       if (isPlaying) {
         musicFrame.src = "";
-        isPlaying = false;
+        isPlaying = true;
         musicIcon.className = "fa-solid fa-volume-xmark text-sm";
       } else {
         playMusic();
