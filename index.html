@@ -74,16 +74,28 @@
     .petal:nth-child(5) { left: 75%; width: 15px; height: 18px; animation-duration: 7s; animation-delay: 3s; }
     .petal:nth-child(6) { left: 90%; width: 11px; height: 15px; animation-duration: 10s; animation-delay: 5s; }
 
-    /* --- EFEK SMOOTH SCROLL REVEAL --- */
+    /* --- TRANSISI ZOOM-IN COVER PAGE --- */
+    #coverPage {
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #coverPage.zoom-out {
+      opacity: 0;
+      transform: scale(1.15);
+      pointer-events: none;
+    }
+
+    /* --- EFEK SMOOTH SCROLL REVEAL (APPEAR & DISAPPEAR) --- */
     .reveal {
       opacity: 0;
-      transform: translateY(25px);
-      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      transform: translateY(35px) scale(0.97);
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity, transform;
     }
 
     .reveal.active {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
 
     /* --- EFEK FADE DI SISI GAMBAR CAROUSEL --- */
@@ -129,30 +141,30 @@
     <div class="petal"></div>
   </div>
 
+  <!-- COVER PAGE (FULLSCREEN) -->
+  <div id="coverPage" class="fixed inset-0 z-50 w-full h-full bg-stone-50 text-stone-800 flex flex-col justify-between p-6 sm:p-10 text-center bg-melayu-pattern overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center opacity-15" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop');"></div>
+
+    <div class="relative z-10 my-auto py-12 px-6 sm:px-10 border-ukiran my-auto max-w-lg mx-auto w-full rounded-sm bg-white/70 backdrop-blur-xs shadow-sm">
+      <p class="text-[11px] uppercase tracking-[0.4em] text-amber-800 font-semibold mb-4 font-title-custom">Walimatulurus</p>
+      
+      <h1 class="font-elegan text-5xl sm:text-6xl text-amber-950 my-4 leading-tight tracking-wide drop-shadow-xs">
+        Asyraaf <br><span class="text-amber-600 font-title-custom not-italic text-2xl font-light my-2 block">&</span> Auni
+      </h1>
+
+      <div class="w-16 h-[1px] bg-amber-600/40 mx-auto my-5"></div>
+      <p class="text-xs tracking-[0.2em] text-stone-600 uppercase font-medium">Ahad, 6 Jun 2027</p>
+    </div>
+
+    <div class="relative z-10 pb-8">
+      <button onclick="bukaKad()" class="px-8 py-3.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-800 hover:to-amber-700 text-stone-50 font-medium text-xs tracking-widest uppercase rounded-sm shadow-xl border border-amber-400/30 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto">
+        <i class="fa-solid fa-envelope-open text-amber-200"></i> Buka Undangan
+      </button>
+    </div>
+  </div>
+
   <!-- Container Utama -->
   <div class="max-w-xl mx-auto bg-stone-50 min-h-screen shadow-2xl relative pb-24 border-x border-amber-900/10 bg-melayu-pattern overflow-hidden">
-
-    <!-- COVER PAGE -->
-    <div id="coverPage" class="fixed inset-0 z-50 max-w-xl mx-auto bg-stone-50 text-stone-800 flex flex-col justify-between p-8 text-center transition-all duration-700 ease-in-out relative overflow-hidden bg-melayu-pattern">
-      <div class="absolute inset-0 bg-cover bg-center opacity-15" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop');"></div>
-
-      <div class="relative z-10 my-auto py-12 px-6 border-ukiran my-8 rounded-sm bg-white/70 backdrop-blur-xs shadow-sm">
-        <p class="text-[11px] uppercase tracking-[0.4em] text-amber-800 font-semibold mb-4 font-title-custom">Walimatulurus</p>
-        
-        <h1 class="font-elegan text-5xl sm:text-6xl text-amber-950 my-4 leading-tight tracking-wide drop-shadow-xs">
-          Asyraaf <br><span class="text-amber-600 font-title-custom not-italic text-2xl font-light my-2 block">&</span> Auni
-        </h1>
-
-        <div class="w-16 h-[1px] bg-amber-600/40 mx-auto my-5"></div>
-        <p class="text-xs tracking-[0.2em] text-stone-600 uppercase font-medium">Ahad, 6 Jun 2027</p>
-      </div>
-
-      <div class="relative z-10 pb-8">
-        <button onclick="bukaKad()" class="px-8 py-3.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-800 hover:to-amber-700 text-stone-50 font-medium text-xs tracking-widest uppercase rounded-sm shadow-xl border border-amber-400/30 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto">
-          <i class="fa-solid fa-envelope-open text-amber-200"></i> Buka Undangan
-        </button>
-      </div>
-    </div>
 
     <!-- KANDUNGAN UTAMA KAD DIGITAL -->
     <div id="mainContent" class="hidden opacity-0 transition-opacity duration-700">
@@ -360,19 +372,24 @@
     const musicUrl = "https://www.youtube.com/embed/19StO6rP_Q8?autoplay=1&loop=1&playlist=19StO6rP_Q8";
     let isPlaying = false;
 
-    // Fungsi Buka Cover Page & Mula Lagu
+    // Fungsi Buka Cover Page & Smooth Zoom Transition Ke Main Page
     function bukaKad() {
       const cover = document.getElementById("coverPage");
       const content = document.getElementById("mainContent");
       
-      cover.classList.add("opacity-0", "pointer-events-none");
+      // Kesan Zoom Out & Fade Out pada Cover Page
+      cover.classList.add("zoom-out");
       
+      // Paparkan Kandungan Utama
       content.classList.remove("hidden");
       setTimeout(() => {
         content.classList.remove("opacity-0");
+      }, 100);
+
+      setTimeout(() => {
         cover.style.display = "none";
         revealOnScroll();
-      }, 50);
+      }, 800);
 
       playMusic();
     }
@@ -425,17 +442,21 @@
       alert("Nombor akaun berjaya disalin!");
     }
 
-    // Logik Smooth Scroll Reveal
+    // Logik Smooth Scroll Reveal (Appear dan Disappear Apabila Discroll)
     function revealOnScroll() {
       const reveals = document.querySelectorAll('.reveal');
       const windowHeight = window.innerHeight;
       
       reveals.forEach(reveal => {
         const elementTop = reveal.getBoundingClientRect().top;
-        const elementVisible = 80;
+        const elementBottom = reveal.getBoundingClientRect().bottom;
+        const elementVisible = 100;
         
-        if (elementTop < windowHeight - elementVisible) {
+        // Elemen muncul apabila berada dalam skrin & hilang apabila keluar skrin
+        if (elementTop < windowHeight - elementVisible && elementBottom > elementVisible) {
           reveal.classList.add('active');
+        } else {
+          reveal.classList.remove('active');
         }
       });
     }
