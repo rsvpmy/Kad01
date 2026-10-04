@@ -123,8 +123,10 @@
 </head>
 <body class="bg-stone-900 text-stone-800 antialiased selection:bg-amber-100">
 
-  <!-- PLAYER LAGU YOUTUBE (TERSEMBUNYI) -->
-  <iframe id="bgMusic" class="hidden" src="" allow="autoplay"></iframe>
+  <!-- PLAYER LAGU AUDIO MP3 (TERSEMBUNYI) -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="" type="audio/mpeg">
+  </audio>
 
   <!-- BUTANG KAWALAN MUZIK (FLOATING BUTTON) -->
   <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-50 w-11 h-11 bg-amber-800/80 hover:bg-amber-800 text-amber-100 rounded-full shadow-lg border border-amber-400/40 flex items-center justify-center backdrop-blur-md transition-all">
@@ -369,7 +371,8 @@
 
   <!-- JavaScript Logic -->
   <script>
-    const VIDEO_ID = "P6pRWaNFrfI&list=RDP6pRWaNFrfI&start_radio=1";
+    // MASUKKAN NAMA/PATH FAIL MP3 ANDA DALAM PETIKAN DI BAWAH (CTH: "lagu.mp3")
+    const musicUrl = "weddingsong.mp3"; 
     let isPlaying = false;
 
     // Fungsi Buka Cover Page & Smooth Zoom Transition Ke Main Page
@@ -394,22 +397,30 @@
       playMusic();
     }
 
-    // Fungsi Kawalan Muzik
+    // Fungsi Kawalan Muzik MP3
     function playMusic() {
-      const musicFrame = document.getElementById("bgMusic");
+      const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
-      musicFrame.src = VIDEO_ID;
-      isPlaying = true;
-      musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+      
+      if (musicUrl && audio.getAttribute("src") !== musicUrl) {
+        audio.src = musicUrl;
+      }
+
+      audio.play().then(() => {
+        isPlaying = true;
+        musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+      }).catch(error => {
+        console.log("Autoplay dihalang atau tiada fail audio:", error);
+      });
     }
 
     function toggleMusic() {
-      const musicFrame = document.getElementById("bgMusic");
+      const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
 
       if (isPlaying) {
-        musicFrame.src = "";
-        isPlaying = true;
+        audio.pause();
+        isPlaying = false;
         musicIcon.className = "fa-solid fa-volume-xmark text-sm";
       } else {
         playMusic();
