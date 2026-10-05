@@ -16,20 +16,19 @@
     .font-title-custom { font-family: 'Cinzel', serif; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
     
-    /* Latar Belakang Songket / Motif Klasik */
+    /* Latar Belakang Songket / Motif Klasik Elegance */
     .bg-melayu-pattern {
-      background-color: #fdfbf7;
-      background-image: radial-gradient(#d4af37 0.5px, transparent 0.5px), radial-gradient(#d4af37 0.5px, #fdfbf7 0.5px);
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
-      background-opacity: 0.05;
+      background-color: #faf6f0;
+      background-image: radial-gradient(#c5a059 0.6px, transparent 0.6px), radial-gradient(#c5a059 0.6px, #faf6f0 0.6px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
     }
 
-    /* Bingkai Ukiran Tradisional Moden */
+    /* Bingkai Ukiran Tradisional Moden & Double Frame */
     .border-ukiran {
-      border: 2px solid #c5a059;
-      outline: 1px solid #c5a059;
-      outline-offset: 4px;
+      border: 1px solid #c5a059;
+      outline: 3px double #d4af37;
+      outline-offset: 6px;
     }
 
     /* --- ANIMASI BUNGA BERGERAK (PETALS MOVEMENT) --- */
@@ -46,9 +45,9 @@
 
     .petal {
       position: absolute;
-      background: radial-gradient(circle, #fbcfe8 0%, #f472b6 70%);
+      background: radial-gradient(circle, #fde68a 0%, #d97706 80%);
       border-radius: 150% 0 150% 0;
-      opacity: 0.7;
+      opacity: 0.6;
       animation: animate-petal 10s linear infinite;
     }
 
@@ -58,8 +57,8 @@
         top: -10%;
         transform: translateX(0) rotate(0deg);
       }
-      10% { opacity: 0.8; }
-      90% { opacity: 0.8; }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
       100% {
         opacity: 0;
         top: 110%;
@@ -85,7 +84,7 @@
       pointer-events: none;
     }
 
-    /* --- EFEK SMOOTH SCROLL REVEAL (APPEAR & DISAPPEAR) --- */
+    /* --- EFEK SMOOTH SCROLL REVEAL --- */
     .reveal {
       opacity: 0;
       transform: translateY(35px) scale(0.97);
@@ -112,24 +111,24 @@
 
     .carousel-container::before {
       left: 0;
-      background: linear-gradient(to right, #fdfbf7 0%, rgba(253, 251, 247, 0) 100%);
+      background: linear-gradient(to right, #faf6f0 0%, rgba(250, 246, 240, 0) 100%);
     }
 
     .carousel-container::after {
       right: 0;
-      background: linear-gradient(to left, #fdfbf7 0%, rgba(253, 251, 247, 0) 100%);
+      background: linear-gradient(to left, #faf6f0 0%, rgba(250, 246, 240, 0) 100%);
     }
   </style>
 </head>
 <body class="bg-stone-900 text-stone-800 antialiased selection:bg-amber-100">
 
-  <!-- PLAYER LAGU AUDIO MP3 (TERSEMBUNYI) -->
+  <!-- PLAYER LAGU AUDIO MP3 -->
   <audio id="bgMusic" loop preload="auto">
     <source src="" type="audio/mpeg">
   </audio>
 
-  <!-- BUTANG KAWALAN MUZIK (FLOATING BUTTON) -->
-  <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-50 w-11 h-11 bg-amber-800/80 hover:bg-amber-800 text-amber-100 rounded-full shadow-lg border border-amber-400/40 flex items-center justify-center backdrop-blur-md transition-all">
+  <!-- BUTANG KAWALAN MUZIK -->
+  <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-50 w-11 h-11 bg-amber-900/80 hover:bg-amber-900 text-amber-200 rounded-full shadow-xl border border-amber-400/40 flex items-center justify-center backdrop-blur-md transition-all">
     <i id="musicIcon" class="fa-solid fa-music text-sm"></i>
   </button>
 
@@ -145,62 +144,59 @@
 
   <!-- COVER PAGE (FULLSCREEN) -->
   <div id="coverPage" class="fixed inset-0 z-50 w-full h-full bg-stone-50 text-stone-800 flex flex-col justify-between p-6 sm:p-10 text-center bg-melayu-pattern overflow-hidden">
-    <div class="absolute inset-0 bg-cover bg-center opacity-15" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop');"></div>
+    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop');"></div>
 
-    <div class="relative z-10 my-auto py-12 px-6 sm:px-10 border-ukiran my-auto max-w-lg mx-auto w-full rounded-sm bg-white/70 backdrop-blur-xs shadow-sm">
+    <div class="relative z-10 my-auto py-12 px-6 sm:px-10 border-ukiran max-w-md mx-auto w-full rounded-sm bg-white/80 backdrop-blur-md shadow-2xl">
       <p class="text-[11px] uppercase tracking-[0.4em] text-amber-800 font-semibold mb-4 font-title-custom">Walimatulurus</p>
       
       <h1 class="font-elegan text-5xl sm:text-6xl text-amber-950 my-4 leading-tight tracking-wide drop-shadow-xs italic">
         Auni <br><span class="text-amber-600 font-elegan not-italic text-3xl font-normal my-1 block">&</span> Asyraaf
       </h1>
 
-      <div class="w-16 h-[1px] bg-amber-600/40 mx-auto my-5"></div>
-      <p class="text-xs tracking-[0.2em] text-stone-600 uppercase font-medium">Jumaat, 28 May 2027</p>
+      <div class="w-20 h-[1px] bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto my-6"></div>
+      <p class="text-[11px] tracking-[0.25em] text-stone-600 uppercase font-medium">Jumaat, 28 May 2027</p>
     </div>
 
     <div class="relative z-10 pb-8">
-      <button onclick="bukaKad()" class="px-8 py-3.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 hover:from-amber-800 hover:to-amber-700 text-stone-50 font-medium text-xs tracking-widest uppercase rounded-sm shadow-xl border border-amber-400/30 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto">
-        <i class="fa-solid fa-envelope-open text-amber-200"></i> Buka Undangan
+      <button onclick="bukaKad()" class="px-9 py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 hover:from-amber-950 hover:to-amber-900 text-amber-100 font-medium text-xs tracking-[0.2em] uppercase rounded-xs shadow-2xl border border-amber-400/40 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto">
+        <i class="fa-solid fa-envelope-open text-amber-300"></i> Buka Undangan
       </button>
     </div>
   </div>
 
-  <!-- Container Utama -->
+  <!-- CONTAINER UTAMA (MAIN CONTENT) -->
   <div class="max-w-xl mx-auto bg-stone-50 min-h-screen shadow-2xl relative pb-24 border-x border-amber-900/10 bg-melayu-pattern overflow-hidden">
 
-    <!-- KANDUNGAN UTAMA KAD DIGITAL -->
     <div id="mainContent" class="hidden opacity-0 transition-opacity duration-700">
       
-      <!-- Hero Section (Main Page Header) -->
-      <header class="reveal relative text-center px-6 pt-12 pb-8 bg-cover bg-center overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(253, 251, 247, 0.85), rgba(253, 251, 247, 0.95)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop');">
-        
-        <!-- Gambar Cincin Sebagai Layer Belakang Tulisan (Watermark/Background) -->
-        <img src="cincin1.png" alt="Cincin Perkahwinan" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 opacity-25 pointer-events-none z-0">
+      <!-- Header / Hero Section -->
+      <header class="reveal relative text-center px-6 pt-14 pb-10 bg-cover bg-center overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(250, 246, 240, 0.85), rgba(250, 246, 240, 0.95)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop');">
+        <img src="cincin1.png" alt="Cincin Perkahwinan" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 opacity-20 pointer-events-none z-0">
 
         <div class="relative z-10">
-          <div class="inline-block p-1 border-b-2 border-t-2 border-amber-600/40 mb-3">
-            <p class="text-[10px] uppercase tracking-[0.3em] text-amber-800 font-semibold font-title-custom">Walimatulurus</p>
+          <div class="inline-block px-4 py-1 border-y border-amber-700/30 mb-3">
+            <p class="text-[10px] uppercase tracking-[0.35em] text-amber-900 font-semibold font-title-custom">Walimatulurus</p>
           </div>
           
           <h1 class="font-elegan text-4xl sm:text-5xl text-amber-950 my-3 drop-shadow-xs tracking-wide italic">
             Auni <span class="text-amber-600 font-elegan not-italic text-2xl font-normal">&</span> Asyraaf
           </h1>
           
-          <p class="text-xs tracking-widest text-stone-500 uppercase mt-2">Jumaat, 28 May 2027</p>
+          <p class="text-[11px] tracking-[0.2em] text-stone-600 uppercase mt-2 font-medium">Jumaat, 28 May 2027</p>
         </div>
       </header>
 
       <!-- Pembuka Kata -->
       <section class="reveal px-8 text-center py-6 space-y-4">
-        <div class="text-amber-800 text-xl font-serif">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-        <div class="w-12 h-[1px] bg-amber-600/30 mx-auto"></div>
+        <div class="text-amber-900 text-2xl font-serif tracking-wide">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+        <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-amber-700/40 to-transparent mx-auto"></div>
         
         <p class="text-xs text-stone-700 leading-relaxed font-light italic">
           Maha Suci Allah yang menciptakan manusia itu berpasang-pasangan. Dengan penuh rasa kesyukuran dan segala hormatnya, kami:
         </p>
 
-        <!-- Nama Ibu Bapa Pengantin -->
-        <div class="py-2 space-y-1">
+        <!-- Nama Ibu Bapa -->
+        <div class="py-3 space-y-1 border-y border-amber-900/10 my-2">
           <p class="font-elegan text-2xl sm:text-3xl text-amber-950 tracking-wide italic">
             Muhammad Bin A. Rahman
           </p>
@@ -218,45 +214,56 @@
       </section>
 
       <!-- Countdown Timer -->
-      <section class="reveal px-6 py-6 bg-gradient-to-r from-stone-100 via-amber-50/50 to-stone-100 border-y border-amber-900/10 my-4 text-center">
-        <h2 class="text-[11px] font-semibold text-amber-900 uppercase tracking-[0.2em] mb-4 font-title-custom">Menghitung Hari</h2>
+      <section class="reveal px-6 py-6 bg-amber-900/5 border-y border-amber-900/10 my-4 text-center">
+        <h2 class="text-[11px] font-semibold text-amber-950 uppercase tracking-[0.2em] mb-4 font-title-custom">Menghitung Hari</h2>
         <div class="grid grid-cols-4 gap-3 text-center max-w-sm mx-auto" id="countdown">
-          <div class="bg-white/90 p-3 rounded-sm shadow-sm border border-amber-950/10">
-            <span id="days" class="block text-2xl font-bold text-amber-800 font-title-custom">٠٠</span>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="days" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
             <span class="text-[9px] text-stone-500 uppercase tracking-wider">Hari</span>
           </div>
-          <div class="bg-white/90 p-3 rounded-sm shadow-sm border border-amber-950/10">
-            <span id="hours" class="block text-2xl font-bold text-amber-800 font-title-custom">٠٠</span>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="hours" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
             <span class="text-[9px] text-stone-500 uppercase tracking-wider">Jam</span>
           </div>
-          <div class="bg-white/90 p-3 rounded-sm shadow-sm border border-amber-950/10">
-            <span id="minutes" class="block text-2xl font-bold text-amber-800 font-title-custom">٠٠</span>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="minutes" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
             <span class="text-[9px] text-stone-500 uppercase tracking-wider">Minit</span>
           </div>
-          <div class="bg-white/90 p-3 rounded-sm shadow-sm border border-amber-950/10">
-            <span id="seconds" class="block text-2xl font-bold text-amber-800 font-title-custom">٠٠</span>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="seconds" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
             <span class="text-[9px] text-stone-500 uppercase tracking-wider">Saat</span>
           </div>
         </div>
       </section>
 
       <!-- Maklumat Majlis & Peta Lokasi -->
-      <section class="reveal px-6 py-6 space-y-8 text-center">
-        <div class="bg-white/60 p-6 rounded-sm border border-amber-900/10 shadow-xs">
-          <i class="fa-regular fa-clock text-amber-700 text-lg mb-2"></i>
-          <h3 class="text-xs font-semibold text-amber-900 uppercase tracking-[0.15em] font-title-custom">Tarikh & Masa</h3>
-          <p class="text-sm font-semibold text-stone-800 mt-2">Jumaat, 28 May 2027</p>
-          <p class="text-xs text-stone-600 mt-1">08:00 Pagi - 11:00 Pagi</p>
+      <section class="reveal px-6 py-6 space-y-6 text-center">
+        <div class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm space-y-6">
+          <i class="fa-regular fa-clock text-amber-800 text-lg mb-2 block"></i>
+          <h3 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] font-title-custom">Tarikh & Masa</h3>
+          
+          <!-- Sub Section 1: Akad Nikah -->
+          <div class="border-b border-amber-900/10 pb-4">
+            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Majlis Akad Nikah</p>
+            <p class="text-sm font-semibold text-stone-800">Jumaat, 28 May 2027</p>
+            <p class="text-xs text-stone-600 mt-0.5">08:00 Pagi - 11:00 Pagi</p>
+          </div>
+
+          <!-- Sub Section 2: Majlis Persandingan -->
+          <div>
+            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Majlis Persandingan</p>
+            <p class="text-sm font-semibold text-stone-800">Sabtu, 29 May 2027</p>
+            <p class="text-xs text-stone-600 mt-0.5">10:00 Pagi - 05:00 Petang</p>
+          </div>
         </div>
 
-        <div class="bg-white/60 p-6 rounded-sm border border-amber-900/10 shadow-xs">
-          <i class="fa-solid fa-location-dot text-amber-700 text-lg mb-2"></i>
-          <h3 class="text-xs font-semibold text-amber-900 uppercase tracking-[0.15em] font-title-custom">Lokasi</h3>
+        <div class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm">
+          <i class="fa-solid fa-location-dot text-amber-800 text-lg mb-2"></i>
+          <h3 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] font-title-custom">Lokasi</h3>
           <p class="text-sm font-semibold text-stone-800 mt-2">Masjid Abu Darda</p>
           <p class="text-xs text-stone-600 mt-1 mb-4">Jalan Nilam 2, Nilai Impian, 71800 Nilai</p>
           
-          <!-- PETA GOOGLE MAPS INTERAKTIF -->
-          <div class="w-full h-56 rounded-md overflow-hidden border border-amber-900/20 shadow-sm my-4">
+          <div class="w-full h-56 rounded-xs overflow-hidden border border-amber-900/20 shadow-sm my-4">
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.915636473632!2d101.80478219999999!3d2.8406811999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cdc50026f2baef%3A0xc84bcc406c182536!2sMasjid%20Abu%20Al-Darda'%20Nilai%20Impian%20-%20MAAD!5e0!3m2!1sen!2smy!4v1791171276743!5m2!1sen!2smy" 
               width="100%" 
@@ -269,10 +276,10 @@
           </div>
 
           <div class="flex justify-center gap-3 mt-4">
-            <a href="https://maps.app.goo.gl/NHQCLiAdZgdWBFcx6?g_st=iwb" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-stone-900 text-amber-100 text-xs rounded-sm shadow-sm hover:bg-stone-800 transition border border-amber-500/20">
+            <a href="https://maps.app.goo.gl/NHQCLiAdZgdWBFcx6?g_st=iwb" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-stone-900 text-amber-100 text-xs rounded-xs shadow-sm hover:bg-stone-800 transition border border-amber-500/20">
               <i class="fa-solid fa-map-location-dot text-amber-400"></i> Google Maps
             </a>
-            <a href="https://waze.com/ul/hw282hth8v" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-amber-800 text-stone-100 text-xs rounded-sm shadow-sm hover:bg-amber-900 transition border border-amber-600/30">
+            <a href="https://waze.com/ul/hw282hth8v" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-amber-900 text-amber-100 text-xs rounded-xs shadow-sm hover:bg-amber-950 transition border border-amber-600/30">
               <i class="fa-brands fa-waze text-amber-300"></i> Waze
             </a>
           </div>
@@ -286,13 +293,53 @@
         <div class="h-[1px] bg-amber-800 w-24"></div>
       </div>
 
-      <!-- Butang RSVP -->
-      <section id="rsvpSection" class="reveal px-6 py-4 text-center">
-        <h2 class="text-xs font-semibold text-amber-900 uppercase tracking-[0.15em] mb-2 font-title-custom">Pengesahan Kehadiran</h2>
-        <p class="text-xs text-stone-600 mb-5">Sila tekan butang di bawah untuk mengesahkan kehadiran anda:</p>
-        <a href="https://forms.gle/7NTK9dwHegR2KnAE8" target="_blank" class="inline-flex items-center justify-center gap-2 w-full py-3.5 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 text-stone-50 font-medium text-xs tracking-wider uppercase rounded-sm shadow-md hover:from-amber-800 hover:to-amber-700 transition border border-amber-500/30">
-          <i class="fa-solid fa-envelope-open-text text-sm text-amber-200"></i> RSVP
-        </a>
+      <!-- RSVP Section -->
+      <section id="rsvpSection" class="reveal px-6 py-4">
+        <div class="text-center mb-6">
+          <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-2 font-title-custom">Pengesahan Kehadiran</h2>
+          <p class="text-xs text-stone-600">Sila isi borang di bawah untuk mengesahkan kehadiran anda:</p>
+        </div>
+
+        <form onsubmit="submitRSVP(event)" class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm space-y-4 text-left max-w-md mx-auto">
+          <!-- Nama -->
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Nama Full / Panggilan *</label>
+            <input type="text" id="rsvpNama" required placeholder="Masukkan nama anda" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+          </div>
+
+          <!-- Status Kehadiran -->
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Status Kehadiran *</label>
+            <select id="rsvpStatus" required onchange="toggleGuestCount()" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+              <option value="" disabled selected>Sila Pilih</option>
+              <option value="Hadir">Hadir</option>
+              <option value="Tidak Hadir">Tidak Hadir</option>
+              <option value="Ragu-ragu">Belum Pasti</option>
+            </select>
+          </div>
+
+          <!-- Bilangan Tetamu -->
+          <div id="guestCountWrapper" class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Bilangan Dewasa</label>
+              <input type="number" id="rsvpDewasa" min="0" value="1" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Bilangan Kanak-kanak</label>
+              <input type="number" id="rsvpKanak" min="0" value="0" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+            </div>
+          </div>
+
+          <!-- Ucapan Perkahwinan & Nasihat Kekeluargaan -->
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Ucapan Perkahwinan & Nasihat Kekeluargaan</label>
+            <textarea id="rsvpUcapan" rows="3" placeholder="Tuliskan ucapan atau nasihat buat pasangan pengantin..." class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800"></textarea>
+          </div>
+
+          <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-amber-100 font-medium text-xs tracking-wider uppercase rounded-xs shadow-md hover:from-amber-950 hover:to-amber-900 transition border border-amber-500/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane text-amber-300"></i> Hantar RSVP
+          </button>
+        </form>
       </section>
 
       <!-- Divider Motif Melayu -->
@@ -302,19 +349,19 @@
         <div class="h-[1px] bg-amber-800 w-24"></div>
       </div>
 
-      <!-- Salam Kaut / Sumbangan -->
+      <!-- Salam Kaut / Gift -->
       <section class="reveal px-6 py-4 text-center">
-        <h2 class="text-xs font-semibold text-amber-900 uppercase tracking-[0.15em] mb-2 font-title-custom">Salam Kaut / Gift</h2>
+        <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-2 font-title-custom">Salam Kaut / Gift</h2>
         <p class="text-xs text-stone-600 mb-4">Bagi yang ingin memberikan sumbangan ikhlas:</p>
         
-        <div class="bg-white/80 p-5 rounded-sm border border-amber-900/10 space-y-4 shadow-xs max-w-sm mx-auto">
+        <div class="bg-white/80 p-5 rounded-xs border border-amber-900/10 space-y-4 shadow-sm max-w-sm mx-auto">
           <div class="flex justify-center">
-            <img src="Qrcode.jpeg" alt="QR Code Hong Leong Bank" class="w-48 h-auto rounded-md shadow-md border border-amber-900/10 object-contain">
+            <img src="Qrcode.jpeg" alt="QR Code Hong Leong Bank" class="w-48 h-auto rounded-xs shadow-md border border-amber-900/10 object-contain">
           </div>
 
           <div class="space-y-1">
-            <p class="text-xs font-semibold text-amber-900 uppercase tracking-wider font-title-custom">Maybank</p>
-            <p class="text-base font-mono font-bold text-amber-800 tracking-wider" id="accNumber">38101090540</p>
+            <p class="text-xs font-semibold text-amber-950 uppercase tracking-wider font-title-custom">Maybank</p>
+            <p class="text-base font-mono font-bold text-amber-900 tracking-wider" id="accNumber">38101090540</p>
             <p class="text-[11px] text-stone-600 uppercase">Fatin Auni Binti Muhammad</p>
           </div>
 
@@ -331,42 +378,37 @@
         <div class="h-[1px] bg-amber-800 w-24"></div>
       </div>
 
-      <!-- GALERI MAJLIS BERTUNANG -->
+      <!-- Galeri Tunang -->
       <section class="reveal px-6 py-4 text-center">
-        <h2 class="text-xs font-semibold text-amber-900 uppercase tracking-[0.15em] mb-1 font-title-custom">Kenangan Majlis Pertunangan</h2>
-        <p class="text-[11px] text-amber-700/80 font-serif italic mb-6">26 September 2026</p>
+        <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-1 font-title-custom">Kenangan Majlis Pertunangan</h2>
+        <p class="text-[11px] text-amber-800/80 font-serif italic mb-6">26 September 2026</p>
 
-        <!-- Container Utama dengan kesan Fade di Sisi -->
         <div class="carousel-container relative max-w-xl mx-auto overflow-hidden">
-          
-          <!-- Slider Container -->
           <div id="engagementCarousel" class="flex transition-transform duration-1000 ease-in-out">
-            <div class="min-w-full"><img src="tunang1.jpg" alt="Majlis Tunang 1" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang2.jpg" alt="Majlis Tunang 2" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang3.jpg" alt="Majlis Tunang 3" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang4.jpg" alt="Majlis Tunang 4" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang5.jpg" alt="Majlis Tunang 5" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang6.jpg" alt="Majlis Tunang 6" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang7.jpg" alt="Majlis Tunang 7" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang8.jpg" alt="Majlis Tunang 8" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang9.jpg" alt="Majlis Tunang 9" class="w-full h-72 sm:h-80 object-cover"></div>
-            <div class="min-w-full"><img src="tunang10.jpg" alt="Majlis Tunang 10" class="w-full h-72 sm:h-80 object-cover"></div>
+            <div class="min-w-full"><img src="tunang1.jpg" alt="Majlis Tunang 1" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang2.jpg" alt="Majlis Tunang 2" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang3.jpg" alt="Majlis Tunang 3" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang4.jpg" alt="Majlis Tunang 4" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang5.jpg" alt="Majlis Tunang 5" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang6.jpg" alt="Majlis Tunang 6" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang7.jpg" alt="Majlis Tunang 7" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang8.jpg" alt="Majlis Tunang 8" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang9.jpg" alt="Majlis Tunang 9" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
+            <div class="min-w-full"><img src="tunang10.jpg" alt="Majlis Tunang 10" class="w-full h-72 sm:h-80 object-cover rounded-xs"></div>
           </div>
 
-          <!-- Dots Indicator -->
           <div class="flex justify-center gap-2 mt-4 mb-2 relative z-20" id="carouselDots">
-            <button onclick="goToSlide(0)" class="dot w-2 h-2 rounded-full bg-amber-800 transition-all"></button>
-            <button onclick="goToSlide(1)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(2)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(3)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(4)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(5)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(6)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(7)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(8)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
-            <button onclick="goToSlide(9)" class="dot w-2 h-2 rounded-full bg-amber-800/30 transition-all"></button>
+            <button onclick="goToSlide(0)" class="dot w-2 h-2 rounded-full bg-amber-900 transition-all"></button>
+            <button onclick="goToSlide(1)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(2)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(3)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(4)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(5)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(6)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(7)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(8)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
+            <button onclick="goToSlide(9)" class="dot w-2 h-2 rounded-full bg-amber-900/30 transition-all"></button>
           </div>
-
         </div>
       </section>
 
@@ -389,20 +431,16 @@
 
   <!-- JavaScript Logic -->
   <script>
-    // MASUKKAN NAMA/PATH FAIL MP3 ANDA DALAM PETIKAN DI BAWAH (CTH: "lagu.mp3")
     const musicUrl = "weddingsong.mp3"; 
     let isPlaying = false;
 
-    // Fungsi Buka Cover Page & Smooth Zoom Transition Ke Main Page
     function bukaKad() {
       const cover = document.getElementById("coverPage");
       const content = document.getElementById("mainContent");
       
-      // Kesan Zoom Out & Fade Out pada Cover Page
       cover.classList.add("zoom-out");
-      
-      // Paparkan Kandungan Utama
       content.classList.remove("hidden");
+      
       setTimeout(() => {
         content.classList.remove("opacity-0");
       }, 100);
@@ -415,7 +453,6 @@
       playMusic();
     }
 
-    // Fungsi Kawalan Muzik MP3
     function playMusic() {
       const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
@@ -428,7 +465,7 @@
         isPlaying = true;
         musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
       }).catch(error => {
-        console.log("Autoplay dihalang atau tiada fail audio:", error);
+        console.log("Autoplay dihalang:", error);
       });
     }
 
@@ -445,7 +482,6 @@
       }
     }
 
-    // Fungsi Penukaran Nombor Rumi ke Nombor Arab
     function toArabicDigits(str) {
       const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
       return String(str).replace(/[0-9]/g, function(w) {
@@ -453,7 +489,6 @@
       });
     }
 
-    // Countdown Timer Logic
     const eventDate = new Date("May 28, 2027 10:00:00").getTime();
 
     const timer = setInterval(function() {
@@ -462,7 +497,7 @@
 
       if (distance < 0) {
         clearInterval(timer);
-        document.getElementById("countdown").innerHTML = "<p class='col-span-4 font-semibold text-amber-800'>Majlis Sedang Berlangsung!</p>";
+        document.getElementById("countdown").innerHTML = "<p class='col-span-4 font-semibold text-amber-900'>Majlis Sedang Berlangsung!</p>";
         return;
       }
 
@@ -477,14 +512,29 @@
       document.getElementById("seconds").innerText = toArabicDigits(seconds < 10 ? '0' + seconds : seconds);
     }, 1000);
 
-    // Salin Nombor Akaun
     function copyAccount() {
       const acc = document.getElementById("accNumber").innerText;
       navigator.clipboard.writeText(acc);
       alert("Nombor akaun berjaya disalin!");
     }
 
-    // Logik Smooth Scroll Reveal (Appear dan Disappear Apabila Discroll)
+    function toggleGuestCount() {
+      const status = document.getElementById("rsvpStatus").value;
+      const guestWrapper = document.getElementById("guestCountWrapper");
+      if (status === "Tidak Hadir") {
+        guestWrapper.style.display = "none";
+      } else {
+        guestWrapper.style.display = "grid";
+      }
+    }
+
+    function submitRSVP(e) {
+      e.preventDefault();
+      const nama = document.getElementById("rsvpNama").value;
+      alert(`Terima kasih ${nama}! Pengesahan kehadiran anda telah berjaya dihantar.`);
+      e.target.reset();
+    }
+
     function revealOnScroll() {
       const reveals = document.querySelectorAll('.reveal');
       const windowHeight = window.innerHeight;
@@ -494,7 +544,6 @@
         const elementBottom = reveal.getBoundingClientRect().bottom;
         const elementVisible = 100;
         
-        // Elemen muncul apabila berada dalam skrin & hilang apabila keluar skrin
         if (elementTop < windowHeight - elementVisible && elementBottom > elementVisible) {
           reveal.classList.add('active');
         } else {
@@ -505,7 +554,6 @@
 
     window.addEventListener('scroll', revealOnScroll);
 
-    // --- CAROUSEL GALERI BERTUNANG LOGIC ---
     let currentSlide = 0;
     const totalSlides = 10;
     let autoSlideInterval;
@@ -517,11 +565,11 @@
       const dots = document.querySelectorAll("#carouselDots .dot");
       dots.forEach((dot, index) => {
         if (index === currentSlide) {
-          dot.classList.remove("bg-amber-800/30");
-          dot.classList.add("bg-amber-800", "w-4");
+          dot.classList.remove("bg-amber-900/30");
+          dot.classList.add("bg-amber-900", "w-4");
         } else {
-          dot.classList.remove("bg-amber-800", "w-4");
-          dot.classList.add("bg-amber-800/30", "w-2");
+          dot.classList.remove("bg-amber-900", "w-4");
+          dot.classList.add("bg-amber-900/30", "w-2");
         }
       });
     }
