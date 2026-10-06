@@ -333,7 +333,7 @@
   <script>
     // tetapan SUPABASE DARI PROJEK https://cfpbpoagovtktyoyxmor.supabase.co
     const SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable__Ym51T__R0jBLF-kkB2CGA_KhVNm5Q6';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmcGJwb2Fnb3Z0a3R5b3l4bW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNjU4NTcsImV4cCI6MjEwNjg0MTg1N30.jHQXvZSiH_kAgOj6Dcn630hT2PIX70RLdaRxI3Q-qRY';
     
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -610,7 +610,7 @@
       });
     }
 
-    function nextSlide() {
+    function nextSlide() {f
       if (totalSlides === 0) return;
       currentSlide = (currentSlide + 1) % totalSlides;
       updateCarousel();
