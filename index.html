@@ -353,54 +353,57 @@
       try {
         const { data, error } = await supabase
           .from('majlis_info')
-          .select('*')
-          .limit(1)
-          .single();
+          .select('*');
 
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase Error:", error);
+          return;
+        }
 
-        if (data) {
+        if (data && data.length > 0) {
+          const info = data[0]; // Ambil rekod pertama
+
           // Kemaskini Teks Laman Web
-          document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = data.nama_pengantin_1);
-          document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = data.nama_pengantin_2);
-          document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = data.tarikh_ringkas);
-          document.getElementById('docTitle').innerText = `Walimatulurus ${data.nama_pengantin_1} & ${data.nama_pengantin_2}`;
+          document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || '');
+          document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = info.nama_pengantin_2 || '');
+          document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = info.tarikh_ringkas || '');
+          document.getElementById('docTitle').innerText = `Walimatulurus ${info.nama_pengantin_1} & ${info.nama_pengantin_2}`;
 
-          document.getElementById('namaBapa').innerText = data.nama_bapa;
-          document.getElementById('namaIbu').innerText = data.nama_ibu;
+          document.getElementById('namaBapa').innerText = info.nama_bapa || '';
+          document.getElementById('namaIbu').innerText = info.nama_ibu || '';
 
-          document.getElementById('tarikhNikah').innerText = data.tarikh_nikah;
-          document.getElementById('masaNikah').innerText = data.masa_nikah;
-          document.getElementById('tarikhSanding').innerText = data.tarikh_sanding;
-          document.getElementById('masaSanding').innerText = data.masa_sanding;
+          document.getElementById('tarikhNikah').innerText = info.tarikh_nikah || '';
+          document.getElementById('masaNikah').innerText = info.masa_nikah || '';
+          document.getElementById('tarikhSanding').innerText = info.tarikh_sanding || '';
+          document.getElementById('masaSanding').innerText = info.masa_sanding || '';
 
-          document.getElementById('namaLokasi').innerText = data.nama_lokasi;
-          document.getElementById('alamatLokasi').innerText = data.alamat_lokasi;
-          if (data.embed_maps_url) document.getElementById('iframeMaps').src = data.embed_maps_url;
-          if (data.gmaps_url) document.getElementById('linkGmaps').href = data.gmaps_url;
-          if (data.waze_url) document.getElementById('linkWaze').href = data.waze_url;
+          document.getElementById('namaLokasi').innerText = info.nama_lokasi || '';
+          document.getElementById('alamatLokasi').innerText = info.alamat_lokasi || '';
+          if (info.embed_maps_url) document.getElementById('iframeMaps').src = info.embed_maps_url;
+          if (info.gmaps_url) document.getElementById('linkGmaps').href = info.gmaps_url;
+          if (info.waze_url) document.getElementById('linkWaze').href = info.waze_url;
 
-          document.getElementById('namaBank').innerText = data.nama_bank;
-          document.getElementById('accNumber').innerText = data.no_akaun_bank;
-          document.getElementById('namaAkaunBank').innerText = data.pemilik_akaun_bank;
+          document.getElementById('namaBank').innerText = info.nama_bank || '';
+          document.getElementById('accNumber').innerText = info.no_akaun_bank || '';
+          document.getElementById('namaAkaunBank').innerText = info.pemilik_akaun_bank || '';
           
-          if (data.qr_code_url) {
+          if (info.qr_code_url) {
             const qrImg = document.getElementById('qrImage');
-            qrImg.src = data.qr_code_url;
+            qrImg.src = info.qr_code_url;
             qrImg.classList.remove('hidden');
           }
 
-          document.getElementById('tarikhTunang').innerText = data.tarikh_tunang;
-          if (data.no_telefon) document.getElementById('linkTelefon').href = `tel:${data.no_telefon}`;
-          if (data.lagu_url) {
+          document.getElementById('tarikhTunang').innerText = info.tarikh_tunang || '';
+          if (info.no_telefon) document.getElementById('linkTelefon').href = `tel:${info.no_telefon}`;
+          if (info.lagu_url) {
             const audioSource = document.getElementById('musicSource');
-            audioSource.src = data.lagu_url;
+            audioSource.src = info.lagu_url;
             audioSource.parentElement.load();
           }
 
           // Tetapkan Sasaran Kiraan Detik (Countdown)
-          if (data.tarikh_iso_countdown) {
-            eventDateTarget = new Date(data.tarikh_iso_countdown).getTime();
+          if (info.tarikh_iso_countdown) {
+            eventDateTarget = new Date(info.tarikh_iso_countdown).getTime();
             initCountdown();
           }
         }
@@ -610,7 +613,7 @@
       });
     }
 
-    function nextSlide() {f
+    function nextSlide() {
       if (totalSlides === 0) return;
       currentSlide = (currentSlide + 1) % totalSlides;
       updateCarousel();
