@@ -80,7 +80,7 @@
     
     #coverPage.zoom-out {
       opacity: 0;
-      transform: scale(1.15);
+      transform: scale(1.1);
       pointer-events: none;
     }
 
@@ -158,7 +158,7 @@
     </div>
 
     <div class="relative z-10 pb-8">
-      <button onclick="bukaKad()" class="px-9 py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 hover:from-amber-950 hover:to-amber-900 text-amber-100 font-medium text-xs tracking-[0.2em] uppercase rounded-xs shadow-2xl border border-amber-400/40 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto">
+      <button type="button" onclick="bukaKad()" class="px-9 py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 hover:from-amber-950 hover:to-amber-900 text-amber-100 font-medium text-xs tracking-[0.2em] uppercase rounded-xs shadow-2xl border border-amber-400/40 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto cursor-pointer">
         <i class="fa-solid fa-envelope-open text-amber-300"></i> Buka Undangan
       </button>
     </div>
@@ -443,11 +443,11 @@
       
       setTimeout(() => {
         content.classList.remove("opacity-0");
-      }, 100);
+        revealOnScroll(); // panggil terus supaya kandungan terus nampak
+      }, 50);
 
       setTimeout(() => {
         cover.style.display = "none";
-        revealOnScroll();
       }, 800);
 
       playMusic();
@@ -465,7 +465,7 @@
         isPlaying = true;
         musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
       }).catch(error => {
-        console.log("Autoplay dihalang:", error);
+        console.log("Autoplay dihalang atau file audio tiada:", error);
       });
     }
 
@@ -542,7 +542,7 @@
       reveals.forEach(reveal => {
         const elementTop = reveal.getBoundingClientRect().top;
         const elementBottom = reveal.getBoundingClientRect().bottom;
-        const elementVisible = 100;
+        const elementVisible = 50;
         
         if (elementTop < windowHeight - elementVisible && elementBottom > elementVisible) {
           reveal.classList.add('active');
