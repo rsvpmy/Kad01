@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="docTitle">Walimatulurus</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Supabase JS Client SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    .font-elegan { font-family: 'Playfair Display', serif; font-style: italic; }
+    .font-title-custom { font-family: 'Cinzel', serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    .bg-melayu-pattern {
+      background-color: #faf6f0;
+      background-image: radial-gradient(#c5a059 0.6px, transparent 0.6px), radial-gradient(#c5a059 0.6px, #faf6f0 0.6px);
+      background-size: 24px 24px;
+      background-position: 0 0, 12px 12px;
+    }
+
+    .border-ukiran {
+      border: 1px solid #c5a059;
+      outline: 3px double #d4af37;
+      outline-offset: 6px;
+    }
+
+    .petals-container {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      overflow: hidden; pointer-events: none; z-index: 100;
+    }
+
+    .petal {
+      position: absolute;
+      background: radial-gradient(circle, #fde68a 0%, #d97706 80%);
+      border-radius: 150% 0 150% 0; opacity: 0.6;
+      animation: animate-petal 10s linear infinite;
+    }
+
+    @keyframes animate-petal {
+      0% { opacity: 0; top: -10%; transform: translateX(0) rotate(0deg); }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
+      100% { opacity: 0; top: 110%; transform: translateX(100px) rotate(360deg); }
+    }
+
+    .petal:nth-child(1) { left: 10%; width: 14px; height: 18px; animation-duration: 8s; animation-delay: 0s; }
+    .petal:nth-child(2) { left: 25%; width: 10px; height: 14px; animation-duration: 11s; animation-delay: 2s; }
+    .petal:nth-child(3) { left: 40%; width: 16px; height: 20px; animation-duration: 9s; animation-delay: 4s; }
+    .petal:nth-child(4) { left: 60%; width: 12px; height: 16px; animation-duration: 12s; animation-delay: 1s; }
+    .petal:nth-child(5) { left: 75%; width: 15px; height: 18px; animation-duration: 7s; animation-delay: 3s; }
+    .petal:nth-child(6) { left: 90%; width: 11px; height: 15px; animation-duration: 10s; animation-delay: 5s; }
+
+    #coverPage {
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #coverPage.zoom-out {
+      opacity: 0; transform: scale(1.1); pointer-events: none;
+    }
+
+    .reveal {
+      opacity: 0; transform: translateY(35px) scale(0.97);
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity, transform;
+    }
+
+    .reveal.active { opacity: 1; transform: translateY(0) scale(1); }
+
+    .carousel-container::before, .carousel-container::after {
+      content: ""; position: absolute; top: 0; bottom: 0; width: 15%; z-index: 10; pointer-events: none;
+    }
+    .carousel-container::before { left: 0; background: linear-gradient(to right, #faf6f0 0%, rgba(250, 246, 240, 0) 100%); }
+    .carousel-container::after { right: 0; background: linear-gradient(to left, #faf6f0 0%, rgba(250, 246, 240, 0) 100%); }
+  </style>
+</head>
+<body class="bg-stone-900 text-stone-800 antialiased selection:bg-amber-100">
+
+  <!-- PLAYER LAGU AUDIO MP3 -->
+  <audio id="bgMusic" loop preload="auto">
+    <source id="musicSource" src="" type="audio/mpeg">
+  </audio>
+
+  <!-- BUTANG KAWALAN MUZIK -->
+  <button id="musicToggleBtn" onclick="toggleMusic()" class="fixed top-5 right-5 z-50 w-11 h-11 bg-amber-900/80 hover:bg-amber-900 text-amber-200 rounded-full shadow-xl border border-amber-400/40 flex items-center justify-center backdrop-blur-md transition-all">
+    <i id="musicIcon" class="fa-solid fa-music text-sm"></i>
+  </button>
+
+  <!-- ANIMASI BUNGA MOVING -->
+  <div class="petals-container">
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+    <div class="petal"></div><div class="petal"></div><div class="petal"></div>
+  </div>
+
+  <!-- COVER PAGE (FULLSCREEN) -->
+  <div id="coverPage" class="fixed inset-0 z-50 w-full h-full bg-stone-50 text-stone-800 flex flex-col justify-between p-6 sm:p-10 text-center bg-melayu-pattern overflow-hidden">
+    <div class="absolute inset-0 bg-cover bg-center opacity-10" style="background-image: url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=1200&auto=format&fit=crop');"></div>
+
+    <div class="relative z-10 my-auto py-12 px-6 sm:px-10 border-ukiran max-w-md mx-auto w-full rounded-sm bg-white/80 backdrop-blur-md shadow-2xl">
+      <p class="text-[11px] uppercase tracking-[0.4em] text-amber-800 font-semibold mb-4 font-title-custom">Walimatulurus</p>
+      
+      <h1 class="font-elegan text-5xl sm:text-6xl text-amber-950 my-4 leading-tight tracking-wide drop-shadow-xs italic">
+        <span class="nama-pengantin-1">...</span> <br>
+        <span class="text-amber-600 font-elegan not-italic text-3xl font-normal my-1 block">&</span> 
+        <span class="nama-pengantin-2">...</span>
+      </h1>
+
+      <div class="w-20 h-[1px] bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto my-6"></div>
+      <p class="text-[11px] tracking-[0.25em] text-stone-600 uppercase font-medium tarikh-display">Loading...</p>
+    </div>
+
+    <div class="relative z-10 pb-8">
+      <button type="button" onclick="bukaKad()" class="px-9 py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 hover:from-amber-950 hover:to-amber-900 text-amber-100 font-medium text-xs tracking-[0.2em] uppercase rounded-xs shadow-2xl border border-amber-400/40 transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto cursor-pointer">
+        <i class="fa-solid fa-envelope-open text-amber-300"></i> Buka Undangan
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTAINER UTAMA (MAIN CONTENT) -->
+  <div class="max-w-xl mx-auto bg-stone-50 min-h-screen shadow-2xl relative pb-24 border-x border-amber-900/10 bg-melayu-pattern overflow-hidden">
+
+    <div id="mainContent" class="hidden opacity-0 transition-opacity duration-700">
+      
+      <!-- Header / Hero Section -->
+      <header class="reveal relative text-center px-6 pt-14 pb-10 bg-cover bg-center overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(250, 246, 240, 0.85), rgba(250, 246, 240, 0.95)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop');">
+        <img src="https://cfpbpoagovtktyoyxmor.supabase.co/storage/v1/object/public/kad-images/cincin1.png" alt="Cincin Perkahwinan" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 sm:w-56 opacity-20 pointer-events-none z-0">
+
+        <div class="relative z-10">
+          <div class="inline-block px-4 py-1 border-y border-amber-700/30 mb-3">
+            <p class="text-[10px] uppercase tracking-[0.35em] text-amber-900 font-semibold font-title-custom">Walimatulurus</p>
+          </div>
+          
+          <h1 class="font-elegan text-4xl sm:text-5xl text-amber-950 my-3 drop-shadow-xs tracking-wide italic">
+            <span class="nama-pengantin-1">...</span> <span class="text-amber-600 font-elegan not-italic text-2xl font-normal">&</span> <span class="nama-pengantin-2">...</span>
+          </h1>
+          
+          <p class="text-[11px] tracking-[0.2em] text-stone-600 uppercase mt-2 font-medium tarikh-display">Loading...</p>
+        </div>
+      </header>
+
+      <!-- Pembuka Kata -->
+      <section class="reveal px-8 text-center py-6 space-y-4">
+        <div class="text-amber-900 text-2xl font-serif tracking-wide">بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
+        <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-amber-700/40 to-transparent mx-auto"></div>
+        
+        <p class="text-xs text-stone-700 leading-relaxed font-light italic">
+          Maha Suci Allah yang menciptakan manusia itu berpasang-pasangan. Dengan penuh rasa kesyukuran dan segala hormatnya, kami:
+        </p>
+
+        <!-- Nama Ibu Bapa -->
+        <div class="py-3 space-y-1 border-y border-amber-900/10 my-2">
+          <p id="namaBapa" class="font-elegan text-2xl sm:text-3xl text-amber-950 tracking-wide italic">-</p>
+          <p class="font-elegan text-sm text-amber-700 italic py-0.5">&</p>
+          <p id="namaIbu" class="font-elegan text-2xl sm:text-3xl text-amber-950 tracking-wide italic">-</p>
+        </div>
+
+        <p class="text-xs text-stone-700 leading-relaxed font-light italic">
+          menjemput Dato'/Datin/Tuan/Puan/Encik/Cik ke majlis pernikahan anakanda kami.
+        </p>
+      </section>
+
+      <!-- Countdown Timer -->
+      <section class="reveal px-6 py-6 bg-amber-900/5 border-y border-amber-900/10 my-4 text-center">
+        <h2 class="text-[11px] font-semibold text-amber-950 uppercase tracking-[0.2em] mb-4 font-title-custom">Menghitung Hari</h2>
+        <div class="grid grid-cols-4 gap-3 text-center max-w-sm mx-auto" id="countdown">
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="days" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
+            <span class="text-[9px] text-stone-500 uppercase tracking-wider">Hari</span>
+          </div>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="hours" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
+            <span class="text-[9px] text-stone-500 uppercase tracking-wider">Jam</span>
+          </div>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="minutes" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
+            <span class="text-[9px] text-stone-500 uppercase tracking-wider">Minit</span>
+          </div>
+          <div class="bg-white/90 p-3 rounded-xs shadow-sm border border-amber-900/10">
+            <span id="seconds" class="block text-2xl font-bold text-amber-900 font-title-custom">٠٠</span>
+            <span class="text-[9px] text-stone-500 uppercase tracking-wider">Saat</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Maklumat Majlis & Peta Lokasi -->
+      <section class="reveal px-6 py-6 space-y-6 text-center">
+        <div class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm space-y-6">
+          <i class="fa-regular fa-clock text-amber-800 text-lg mb-2 block"></i>
+          <h3 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] font-title-custom">Tarikh & Masa</h3>
+          
+          <div class="border-b border-amber-900/10 pb-4">
+            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Majlis Akad Nikah</p>
+            <p id="tarikhNikah" class="text-sm font-semibold text-stone-800">-</p>
+            <p id="masaNikah" class="text-xs text-stone-600 mt-0.5">-</p>
+          </div>
+
+          <div>
+            <p class="text-xs font-bold text-amber-900 uppercase tracking-wider mb-1">Majlis Persandingan</p>
+            <p id="tarikhSanding" class="text-sm font-semibold text-stone-800">-</p>
+            <p id="masaSanding" class="text-xs text-stone-600 mt-0.5">-</p>
+          </div>
+        </div>
+
+        <div class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm">
+          <i class="fa-solid fa-location-dot text-amber-800 text-lg mb-2"></i>
+          <h3 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] font-title-custom">Lokasi</h3>
+          <p id="namaLokasi" class="text-sm font-semibold text-stone-800 mt-2">-</p>
+          <p id="alamatLokasi" class="text-xs text-stone-600 mt-1 mb-4">-</p>
+          
+          <div class="w-full h-56 rounded-xs overflow-hidden border border-amber-900/20 shadow-sm my-4">
+            <iframe id="iframeMaps" src="" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+
+          <div class="flex justify-center gap-3 mt-4">
+            <a id="linkGmaps" href="#" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-stone-900 text-amber-100 text-xs rounded-xs shadow-sm hover:bg-stone-800 transition border border-amber-500/20">
+              <i class="fa-solid fa-map-location-dot text-amber-400"></i> Google Maps
+            </a>
+            <a id="linkWaze" href="#" target="_blank" class="flex items-center gap-2 px-5 py-2.5 bg-amber-900 text-amber-100 text-xs rounded-xs shadow-sm hover:bg-amber-950 transition border border-amber-600/30">
+              <i class="fa-brands fa-waze text-amber-300"></i> Waze
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- RSVP Section -->
+      <section id="rsvpSection" class="reveal px-6 py-4">
+        <div class="text-center mb-6">
+          <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-2 font-title-custom">Pengesahan Kehadiran</h2>
+          <p class="text-xs text-stone-600">Sila isi borang di bawah untuk mengesahkan kehadiran anda:</p>
+        </div>
+
+        <form onsubmit="submitRSVP(event)" class="bg-white/80 p-6 rounded-xs border border-amber-900/10 shadow-sm space-y-4 text-left max-w-md mx-auto">
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Nama Full / Panggilan *</label>
+            <input type="text" id="rsvpNama" required placeholder="Masukkan nama anda" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Status Kehadiran *</label>
+            <select id="rsvpStatus" required onchange="toggleGuestCount()" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+              <option value="" disabled selected>Sila Pilih</option>
+              <option value="Hadir">Hadir</option>
+              <option value="Tidak Hadir">Tidak Hadir</option>
+              <option value="Ragu-ragu">Belum Pasti</option>
+            </select>
+          </div>
+
+          <div id="guestCountWrapper" class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Bilangan Dewasa</label>
+              <input type="number" id="rsvpDewasa" min="0" value="1" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Bilangan Kanak-kanak</label>
+              <input type="number" id="rsvpKanak" min="0" value="0" class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-amber-950 uppercase tracking-wider mb-1">Ucapan Perkahwinan & Nasihat Kekeluargaan</label>
+            <textarea id="rsvpUcapan" rows="3" placeholder="Tuliskan ucapan atau nasihat buat pasangan pengantin..." class="w-full text-xs px-3 py-2.5 bg-stone-50 border border-amber-900/20 rounded-xs focus:outline-none focus:border-amber-700 text-stone-800"></textarea>
+          </div>
+
+          <button type="submit" id="btnRsvp" class="w-full py-3.5 bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-amber-100 font-medium text-xs tracking-wider uppercase rounded-xs shadow-md hover:from-amber-950 hover:to-amber-900 transition border border-amber-500/30 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane text-amber-300"></i> Hantar RSVP
+          </button>
+        </form>
+      </section>
+
+      <!-- Salam Kaut / Gift -->
+      <section class="reveal px-6 py-4 text-center">
+        <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-2 font-title-custom">Salam Kaut / Gift</h2>
+        <p class="text-xs text-stone-600 mb-4">Bagi yang ingin memberikan sumbangan ikhlas:</p>
+        
+        <div class="bg-white/80 p-5 rounded-xs border border-amber-900/10 space-y-4 shadow-sm max-w-sm mx-auto">
+          <div class="flex justify-center">
+            <img id="qrImage" src="" alt="QR Code Bank" class="w-48 h-auto rounded-xs shadow-md border border-amber-900/10 object-contain hidden">
+          </div>
+
+          <div class="space-y-1">
+            <p id="namaBank" class="text-xs font-semibold text-amber-950 uppercase tracking-wider font-title-custom">-</p>
+            <p id="accNumber" class="text-base font-mono font-bold text-amber-900 tracking-wider">-</p>
+            <p id="namaAkaunBank" class="text-[11px] text-stone-600 uppercase">-</p>
+          </div>
+
+          <button onclick="copyAccount()" class="mt-2 text-[11px] px-4 py-1.5 bg-stone-100 border border-amber-900/20 rounded-xs text-stone-700 hover:bg-amber-50 hover:text-amber-900 transition">
+            <i class="fa-regular fa-copy"></i> Salin Akaun
+          </button>
+        </div>
+      </section>
+
+      <!-- Galeri Tunang -->
+      <section class="reveal px-6 py-4 text-center">
+        <h2 class="text-xs font-semibold text-amber-950 uppercase tracking-[0.15em] mb-1 font-title-custom">Kenangan Majlis Pertunangan</h2>
+        <p id="tarikhTunang" class="text-[11px] text-amber-800/80 font-serif italic mb-6">-</p>
+
+        <div class="carousel-container relative max-w-xl mx-auto overflow-hidden">
+          <div id="engagementCarousel" class="flex transition-transform duration-1000 ease-in-out">
+            <!-- Gambar dimasukkan secara dinamik dari Supabase -->
+          </div>
+
+          <div class="flex justify-center gap-2 mt-4 mb-2 relative z-20" id="carouselDots">
+            <!-- Dots dimasukkan secara dinamik -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Sticky Bottom Bar -->
+      <div class="fixed bottom-0 left-0 right-0 max-w-xl mx-auto bg-stone-900/95 text-stone-200 backdrop-blur-md border-t border-amber-500/30 px-6 py-3 flex justify-around text-center shadow-2xl z-40">
+        <a id="linkTelefon" href="tel:" class="text-stone-300 hover:text-amber-400 text-[11px] flex flex-col items-center gap-1 transition">
+          <i class="fa-solid fa-phone text-sm text-amber-400"></i> Hubungi
+        </a>
+        <a href="#rsvpSection" class="text-stone-300 hover:text-amber-400 text-[11px] flex flex-col items-center gap-1 transition">
+          <i class="fa-solid fa-envelope-open-text text-sm text-amber-400"></i> RSVP
+        </a>
+        <a id="linkKalendar" href="https://calendar.google.com" target="_blank" class="text-stone-300 hover:text-amber-400 text-[11px] flex flex-col items-center gap-1 transition">
+          <i class="fa-solid fa-calendar-plus text-sm text-amber-400"></i> Kalendar
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- JavaScript Logic & Integration Supabase -->
+  <script>
+    // Tetapan Supabase
+    var SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmcGJwb2Fnb3Z0a3R5b3l4bW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNjU4NTcsImV4cCI6MjEwNjg0MTg1N30.jHQXvZSiH_kAgOj6Dcn630hT2PIX70RLdaRxI3Q-qRY';
+    
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Fungsi Ambil Slug Mengikut Folder URL (Cloudflare & Folder GitHub Structure)
+    function getMajlisSlug() {
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      const lastSegment = pathSegments[pathSegments.length - 1];
+
+      // Jika ada segment terakhir dan bukan nama repo utama (kad01), guna itu sebagai slug
+      if (lastSegment && lastSegment !== 'kad01' && !lastSegment.includes('.html')) {
+        return lastSegment;
+      }
+
+      // Fallback jika dibuka terus di root atau tiada folder spesifik
+      return 'auni-asyraaf'; 
+    }
+
+    const currentMajlisSlug = getMajlisSlug();
+    let currentMajlisNumericId = null; // Disimpan untuk rujukan rsvp/galeri
+
+    let isPlaying = false;
+    let eventDateTarget = null;
+    let currentSlide = 0;
+    let totalSlides = 0;
+    let autoSlideInterval;
+
+    // Load Data dari Supabase sewaktu halaman dibuka
+    document.addEventListener("DOMContentLoaded", () => {
+      fetchMajlisDetails();
+    });
+
+    async function fetchMajlisDetails() {
+      try {
+        // Cari rekod berdasarkan kolum 'slug' di Supabase
+        const { data, error } = await supabase
+          .from('majlis_info')
+          .select('*')
+          .eq('slug', currentMajlisSlug)
+          .single();
+
+        if (error) {
+          console.error("Mesej Ralat Supabase:", error.message);
+          return;
+        }
+
+        if (data) {
+          const info = data;
+          currentMajlisNumericId = info.id; // Simpan ID nombor asal
+
+          // Kemaskini Galeri berdasarkan majlis_id
+          fetchGaleri(info.id);
+
+          // Kemaskini Nama & Cover Page
+          document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || 'Pengantin 1');
+          document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = info.nama_pengantin_2 || 'Pengantin 2');
+          document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = info.tarikh_ringkas || '');
+          document.getElementById('docTitle').innerText = `Walimatulurus ${info.nama_pengantin_1 || ''} & ${info.nama_pengantin_2 || ''}`;
+
+          document.getElementById('namaBapa').innerText = info.nama_bapa || '';
+          document.getElementById('namaIbu').innerText = info.nama_ibu || '';
+
+          document.getElementById('tarikhNikah').innerText = info.tarikh_nikah || '';
+          document.getElementById('masaNikah').innerText = info.masa_nikah || '';
+          document.getElementById('tarikhSanding').innerText = info.tarikh_sanding || '';
+          document.getElementById('masaSanding').innerText = info.masaSanding || info.masa_sanding || '';
+
+          document.getElementById('namaLokasi').innerText = info.nama_lokasi || '';
+          document.getElementById('alamatLokasi').innerText = info.alamat_lokasi || '';
+
+          if (info.embed_maps_url) document.getElementById('iframeMaps').src = info.embed_maps_url;
+          if (info.gmaps_url) document.getElementById('linkGmaps').href = info.gmaps_url;
+          if (info.waze_url) document.getElementById('linkWaze').href = info.waze_url;
+
+          document.getElementById('namaBank').innerText = info.nama_bank || '';
+          document.getElementById('accNumber').innerText = info.no_akaun_bank || '';
+          document.getElementById('namaAkaunBank').innerText = info.pemilik_akaun_bank || '';
+          
+          if (info.qr_code_url) {
+            const qrImg = document.getElementById('qrImage');
+            qrImg.src = info.qr_code_url;
+            qrImg.classList.remove('hidden');
+          }
+
+          document.getElementById('tarikhTunang').innerText = info.tarikh_tunang || '';
+          if (info.no_telefon) document.getElementById('linkTelefon').href = `tel:${info.no_telefon}`;
+          if (info.lagu_url) {
+            const audioSource = document.getElementById('musicSource');
+            audioSource.src = info.lagu_url;
+            audioSource.parentElement.load();
+          }
+
+          if (info.tarikh_iso_countdown) {
+            eventDateTarget = new Date(info.tarikh_iso_countdown).getTime();
+            initCountdown();
+          }
+        }
+      } catch (err) {
+        console.error("Gagal mengambil data majlis:", err);
+      }
+    }
+
+    async function fetchGaleri(majlisId) {
+      try {
+        let query = supabase.from('galeri_tunang').select('*');
+        const { data, error } = await query.order('susunan', { ascending: true });
+
+        if (error) throw error;
+
+        const carousel = document.getElementById('engagementCarousel');
+        const dotsContainer = document.getElementById('carouselDots');
+        
+        carousel.innerHTML = '';
+        dotsContainer.innerHTML = '';
+
+        if (data && data.length > 0) {
+          const filteredData = data.filter(item => !item.majlis_id || item.majlis_id === majlisId);
+          const finalData = filteredData.length > 0 ? filteredData : data;
+
+          totalSlides = finalData.length;
+          finalData.forEach((item, index) => {
+            const slide = document.createElement('div');
+            slide.className = 'min-w-full';
+            slide.innerHTML = `<img src="${item.gambar_url}" alt="Gambar Tunang ${index + 1}" class="w-full h-72 sm:h-80 object-cover rounded-xs">`;
+            carousel.appendChild(slide);
+
+            const dot = document.createElement('button');
+            dot.onclick = () => goToSlide(index);
+            dot.className = `dot w-2 h-2 rounded-full ${index === 0 ? 'bg-amber-900 w-4' : 'bg-amber-900/30'} transition-all`;
+            dotsContainer.appendChild(dot);
+          });
+
+          startAutoSlide();
+        }
+      } catch (err) {
+        console.error("Gagal mengambil galeri gambar:", err);
+      }
+    }
+
+    // Penghantaran Terus Borang RSVP ke Supabase
+    async function submitRSVP(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnRsvp');
+      btn.disabled = true;
+      btn.innerText = "Menghantar...";
+
+      const nama = document.getElementById("rsvpNama").value;
+      const status = document.getElementById("rsvpStatus").value;
+      const dewasa = document.getElementById("rsvpDewasa").value;
+      const kanak = document.getElementById("rsvpKanak").value;
+      const ucapan = document.getElementById("rsvpUcapan").value;
+
+      try {
+        const payload = {
+          nama: nama, 
+          status_kehadiran: status, 
+          bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa || 0), 
+          bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak || 0), 
+          ucapan: ucapan,
+          majlis_id: currentMajlisNumericId // Simpan mengikut ID nombor majlis
+        };
+
+        const { error } = await supabase.from('rsvp').insert([payload]);
+
+        if (error) throw error;
+
+        alert(`Terima kasih ${nama}! Pengesahan kehadiran anda telah berjaya dihantar.`);
+        e.target.reset();
+      } catch (err) {
+        alert("Ralat menghantar RSVP: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-paper-plane text-amber-300"></i> Hantar RSVP`;
+      }
+    }
+
+    function bukaKad() {
+      const cover = document.getElementById("coverPage");
+      const content = document.getElementById("mainContent");
+      
+      cover.classList.add("zoom-out");
+      content.classList.remove("hidden");
+      
+      setTimeout(() => {
+        content.classList.remove("opacity-0");
+        revealOnScroll();
+      }, 50);
+
+      setTimeout(() => {
+        cover.style.display = "none";
+      }, 800);
+
+      playMusic();
+    }
+
+    function playMusic() {
+      const audio = document.getElementById("bgMusic");
+      const musicIcon = document.getElementById("musicIcon");
+      
+      if (audio.src && audio.src !== window.location.href) {
+        audio.play().then(() => {
+          isPlaying = true;
+          musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+        }).catch(error => {
+          console.log("Autoplay dihalang:", error);
+        });
+      }
+    }
+
+    function toggleMusic() {
+      const audio = document.getElementById("bgMusic");
+      const musicIcon = document.getElementById("musicIcon");
+
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        musicIcon.className = "fa-solid fa-volume-xmark text-sm";
+      } else {
+        playMusic();
+      }
+    }
+
+    function toArabicDigits(str) {
+      const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+      return String(str).replace(/[0-9]/g, function(w) { return arabicDigits[+w]; });
+    }
+
+    function initCountdown() {
+      if (!eventDateTarget) return;
+
+      const timer = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = eventDateTarget - now;
+
+        if (distance < 0) {
+          clearInterval(timer);
+          document.getElementById("countdown").innerHTML = "<p class='col-span-4 font-semibold text-amber-900'>Majlis Sedang Berlangsung!</p>";
+          return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = toArabicDigits(days < 10 ? '0' + days : days);
+        document.getElementById("hours").innerText = toArabicDigits(hours < 10 ? '0' + hours : hours);
+        document.getElementById("minutes").innerText = toArabicDigits(minutes < 10 ? '0' + minutes : minutes);
+        document.getElementById("seconds").innerText = toArabicDigits(seconds < 10 ? '0' + seconds : seconds);
+      }, 1000);
+    }
+
+    function copyAccount() {
+      const acc = document.getElementById("accNumber").innerText;
+      if (acc && acc !== '-') {
+        navigator.clipboard.writeText(acc);
+        alert("Nombor akaun berjaya disalin!");
+      }
+    }
+
+    function toggleGuestCount() {
+      const status = document.getElementById("rsvpStatus").value;
+      const guestWrapper = document.getElementById("guestCountWrapper");
+      if (status === "Tidak Hadir") {
+        guestWrapper.style.display = "none";
+      } else {
+        guestWrapper.style.display = "grid";
+      }
+    }
+
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal');
+      const windowHeight = window.innerHeight;
+      
+      reveals.forEach(reveal => {
+        const elementTop = reveal.getBoundingClientRect().top;
+        const elementBottom = reveal.getBoundingClientRect().bottom;
+        const elementVisible = 50;
+        
+        if (elementTop < windowHeight - elementVisible && elementBottom > elementVisible) {
+          reveal.classList.add('active');
+        } else {
+          reveal.classList.remove('active');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', revealOnScroll);
+
+    function updateCarousel() {
+      const carousel = document.getElementById("engagementCarousel");
+      carousel.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+      const dots = document.querySelectorAll("#carouselDots .dot");
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.remove("bg-amber-900/30");
+          dot.classList.add("bg-amber-900", "w-4");
+        } else {
+          dot.classList.remove("bg-amber-900", "w-4");
+          dot.classList.add("bg-amber-900/30", "w-2");
+        }
+      });
+    }
+
+    function nextSlide() {
+      if (totalSlides === 0) return;
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+      resetAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 3500);
+    }
+
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      startAutoSlide();
+    }
+  </script>
+</body>
+</html>
