@@ -337,11 +337,18 @@
     
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Fungsi Ambil Parameter ID/Slug dari URL (e.g. ?id=syarifah atau ?id=auni-asyraaf)
+    // Fungsi Ambil Slug Mengikut Folder URL (Cloudflare & Folder GitHub Structure)
     function getMajlisSlug() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const slug = urlParams.get('id');
-      return slug ? slug : 'syarifah'; // Default fallback jika tiada id dalam URL
+      const pathSegments = window.location.pathname.split('/').filter(Boolean);
+      const lastSegment = pathSegments[pathSegments.length - 1];
+
+      // Jika ada segment terakhir dan bukan nama repo utama (kad01), guna itu sebagai slug
+      if (lastSegment && lastSegment !== 'kad01' && !lastSegment.includes('.html')) {
+        return lastSegment;
+      }
+
+      // Fallback jika dibuka terus di root atau tiada folder spesifik
+      return 'auni-asyraaf'; 
     }
 
     const currentMajlisSlug = getMajlisSlug();
@@ -360,7 +367,7 @@
 
     async function fetchMajlisDetails() {
       try {
-        // Cari rekod berdasarkan kolum 'slug'
+        // Cari rekod berdasarkan kolum 'slug' di Supabase
         const { data, error } = await supabase
           .from('majlis_info')
           .select('*')
@@ -391,7 +398,7 @@
           document.getElementById('tarikhNikah').innerText = info.tarikh_nikah || '';
           document.getElementById('masaNikah').innerText = info.masa_nikah || '';
           document.getElementById('tarikhSanding').innerText = info.tarikh_sanding || '';
-          document.getElementById('masaSanding').innerText = info.masa_sanding || '';
+          document.getElementById('masaSanding').innerText = info.masaSanding || info.masa_sanding || '';
 
           document.getElementById('namaLokasi').innerText = info.nama_lokasi || '';
           document.getElementById('alamatLokasi').innerText = info.alamat_lokasi || '';
