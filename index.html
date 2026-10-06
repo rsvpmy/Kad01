@@ -337,14 +337,15 @@
     
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Fungsi Ambil Parameter ID dari URL (e.g. ?id=1 atau ?id=2)
-    function getMajlisId() {
+    // Fungsi Ambil Parameter ID/Slug dari URL (e.g. ?id=syarifah atau ?id=auni-asyraaf)
+    function getMajlisSlug() {
       const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
-      return id ? parseInt(id) : 1; // Default ke ID = 1 jika tiada ID dalam URL
+      const slug = urlParams.get('id');
+      return slug ? slug : 'syarifah'; // Default fallback jika tiada id dalam URL
     }
 
-    const currentMajlisId = getMajlisId();
+    const currentMajlisSlug = getMajlisSlug();
+    let currentMajlisNumericId = null; // Disimpan untuk rujukan rsvp/galeri
 
     let isPlaying = false;
     let eventDateTarget = null;
@@ -355,15 +356,15 @@
     // Load Data dari Supabase sewaktu halaman dibuka
     document.addEventListener("DOMContentLoaded", () => {
       fetchMajlisDetails();
-      fetchGaleri();
     });
 
     async function fetchMajlisDetails() {
       try {
+        // Cari rekod berdasarkan kolum 'slug'
         const { data, error } = await supabase
           .from('majlis_info')
           .select('*')
-          .eq('id', currentMajlisId)
+          .eq('slug', currentMajlisSlug)
           .single();
 
         if (error) {
@@ -373,6 +374,10 @@
 
         if (data) {
           const info = data;
+          currentMajlisNumericId = info.id; // Simpan ID nombor asal
+
+          // Kemaskini Galeri berdasarkan majlis_id
+          fetchGaleri(info.id);
 
           // Kemaskini Nama & Cover Page
           document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || 'Pengantin 1');
@@ -423,11 +428,9 @@
       }
     }
 
-    async function fetchGaleri() {
+    async function fetchGaleri(majlisId) {
       try {
         let query = supabase.from('galeri_tunang').select('*');
-        
-        // Tapis mengikut majlis_id sekiranya kolum tersebut wujud di galeri_tunang
         const { data, error } = await query.order('susunan', { ascending: true });
 
         if (error) throw error;
@@ -439,19 +442,16 @@
         dotsContainer.innerHTML = '';
 
         if (data && data.length > 0) {
-          // Tapis gambar jika ada kolum majlis_id
-          const filteredData = data.filter(item => !item.majlis_id || item.majlis_id === currentMajlisId);
+          const filteredData = data.filter(item => !item.majlis_id || item.majlis_id === majlisId);
           const finalData = filteredData.length > 0 ? filteredData : data;
 
           totalSlides = finalData.length;
           finalData.forEach((item, index) => {
-            // Tambah gambar slaid
             const slide = document.createElement('div');
             slide.className = 'min-w-full';
             slide.innerHTML = `<img src="${item.gambar_url}" alt="Gambar Tunang ${index + 1}" class="w-full h-72 sm:h-80 object-cover rounded-xs">`;
             carousel.appendChild(slide);
 
-            // Tambah butang indikator (dots)
             const dot = document.createElement('button');
             dot.onclick = () => goToSlide(index);
             dot.className = `dot w-2 h-2 rounded-full ${index === 0 ? 'bg-amber-900 w-4' : 'bg-amber-900/30'} transition-all`;
@@ -485,7 +485,7 @@
           bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa || 0), 
           bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak || 0), 
           ucapan: ucapan,
-          majlis_id: currentMajlisId // Simpan mengikut majlis
+          majlis_id: currentMajlisNumericId // Simpan mengikut ID nombor majlis
         };
 
         const { error } = await supabase.from('rsvp').insert([payload]);
