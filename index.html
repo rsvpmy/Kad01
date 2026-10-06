@@ -107,9 +107,9 @@
       <p class="text-[11px] uppercase tracking-[0.4em] text-amber-800 font-semibold mb-4 font-title-custom">Walimatulurus</p>
       
       <h1 class="font-elegan text-5xl sm:text-6xl text-amber-950 my-4 leading-tight tracking-wide drop-shadow-xs italic">
-        <span class="nama-pengantin-1">Auni</span> <br>
+        <span class="nama-pengantin-1">...</span> <br>
         <span class="text-amber-600 font-elegan not-italic text-3xl font-normal my-1 block">&</span> 
-        <span class="nama-pengantin-2">Asyraaf</span>
+        <span class="nama-pengantin-2">...</span>
       </h1>
 
       <div class="w-20 h-[1px] bg-gradient-to-r from-transparent via-amber-600 to-transparent mx-auto my-6"></div>
@@ -138,7 +138,7 @@
           </div>
           
           <h1 class="font-elegan text-4xl sm:text-5xl text-amber-950 my-3 drop-shadow-xs tracking-wide italic">
-            <span class="nama-pengantin-1">Auni</span> <span class="text-amber-600 font-elegan not-italic text-2xl font-normal">&</span> <span class="nama-pengantin-2">Asyraaf</span>
+            <span class="nama-pengantin-1">...</span> <span class="text-amber-600 font-elegan not-italic text-2xl font-normal">&</span> <span class="nama-pengantin-2">...</span>
           </h1>
           
           <p class="text-[11px] tracking-[0.2em] text-stone-600 uppercase mt-2 font-medium tarikh-display">Loading...</p>
@@ -331,11 +331,11 @@
 
   <!-- JavaScript Logic & Integration Supabase -->
   <script>
-    // 1. ISIKAN TETAPAN SUPABASE ANDA DI SINI
-    const SUPABASE_URL = 'https://XXXXXXXXXXXX.supabase.co';
+    // tetapan SUPABASE DARI PROJEK https://cfpbpoagovtktyoyxmor.supabase.co
+    const SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
     const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
     
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let isPlaying = false;
     let eventDateTarget = null;
@@ -354,12 +354,13 @@
         const { data, error } = await supabase
           .from('majlis_info')
           .select('*')
+          .limit(1)
           .single();
 
         if (error) throw error;
 
         if (data) {
-          // Dynamic text updates
+          // Kemaskini Teks Laman Web
           document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = data.nama_pengantin_1);
           document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = data.nama_pengantin_2);
           document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = data.tarikh_ringkas);
@@ -375,27 +376,33 @@
 
           document.getElementById('namaLokasi').innerText = data.nama_lokasi;
           document.getElementById('alamatLokasi').innerText = data.alamat_lokasi;
-          document.getElementById('iframeMaps').src = data.embed_maps_url;
-          document.getElementById('linkGmaps').href = data.gmaps_url;
-          document.getElementById('linkWaze').href = data.waze_url;
+          if (data.embed_maps_url) document.getElementById('iframeMaps').src = data.embed_maps_url;
+          if (data.gmaps_url) document.getElementById('linkGmaps').href = data.gmaps_url;
+          if (data.waze_url) document.getElementById('linkWaze').href = data.waze_url;
 
           document.getElementById('namaBank').innerText = data.nama_bank;
           document.getElementById('accNumber').innerText = data.no_akaun_bank;
           document.getElementById('namaAkaunBank').innerText = data.pemilik_akaun_bank;
           
-          if(data.qr_code_url) {
+          if (data.qr_code_url) {
             const qrImg = document.getElementById('qrImage');
             qrImg.src = data.qr_code_url;
             qrImg.classList.remove('hidden');
           }
 
           document.getElementById('tarikhTunang').innerText = data.tarikh_tunang;
-          document.getElementById('linkTelefon').href = `tel:${data.no_telefon}`;
-          document.getElementById('musicSource').src = data.lagu_url;
+          if (data.no_telefon) document.getElementById('linkTelefon').href = `tel:${data.no_telefon}`;
+          if (data.lagu_url) {
+            const audioSource = document.getElementById('musicSource');
+            audioSource.src = data.lagu_url;
+            audioSource.parentElement.load();
+          }
 
-          // Target Countdown Timer
-          eventDateTarget = new Date(data.tarikh_iso_countdown).getTime();
-          initCountdown();
+          // Tetapkan Sasaran Kiraan Detik (Countdown)
+          if (data.tarikh_iso_countdown) {
+            eventDateTarget = new Date(data.tarikh_iso_countdown).getTime();
+            initCountdown();
+          }
         }
       } catch (err) {
         console.error("Gagal mengambil data majlis dari Supabase:", err);
@@ -420,13 +427,13 @@
         if (data && data.length > 0) {
           totalSlides = data.length;
           data.forEach((item, index) => {
-            // Add slide
+            // Tambah gambar slaid
             const slide = document.createElement('div');
             slide.className = 'min-w-full';
             slide.innerHTML = `<img src="${item.gambar_url}" alt="Gambar Tunang ${index + 1}" class="w-full h-72 sm:h-80 object-cover rounded-xs">`;
             carousel.appendChild(slide);
 
-            // Add dot
+            // Tambah butang indikator (dots)
             const dot = document.createElement('button');
             dot.onclick = () => goToSlide(index);
             dot.className = `dot w-2 h-2 rounded-full ${index === 0 ? 'bg-amber-900 w-4' : 'bg-amber-900/30'} transition-all`;
@@ -440,7 +447,7 @@
       }
     }
 
-    // Submit RSVP Terus ke Supabase
+    // Penghantaran Terus Borang RSVP ke Supabase
     async function submitRSVP(e) {
       e.preventDefault();
       const btn = document.getElementById('btnRsvp');
@@ -460,8 +467,8 @@
             { 
               nama: nama, 
               status_kehadiran: status, 
-              bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa), 
-              bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak), 
+              bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa || 0), 
+              bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak || 0), 
               ucapan: ucapan 
             }
           ]);
