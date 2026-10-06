@@ -331,11 +331,11 @@
 
   <!-- JavaScript Logic & Integration Supabase -->
   <script>
-    // tetapan SUPABASE DARI PROJEK https://cfpbpoagovtktyoyxmor.supabase.co
-    const SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmcGJwb2Fnb3Z0a3R5b3l4bW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNjU4NTcsImV4cCI6MjEwNjg0MTg1N30.jHQXvZSiH_kAgOj6Dcn630hT2PIX70RLdaRxI3Q-qRY';
+    // Tetapan Supabase (Isytihar skop global sekali sahaja guna 'var')
+    var SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmcGJwb2Fnb3Z0a3R5b3l4bW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNjU4NTcsImV4cCI6MjEwNjg0MTg1N30.jHQXvZSiH_kAgOj6Dcn630hT2PIX70RLdaRxI3Q-qRY';
     
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let isPlaying = false;
     let eventDateTarget = null;
@@ -349,70 +349,71 @@
       fetchGaleri();
     });
 
-async function fetchMajlisDetails() {
-  try {
-    const { data, error } = await supabase
-      .from('majlis_info')
-      .select('*');
+    async function fetchMajlisDetails() {
+      try {
+        const { data, error } = await supabase
+          .from('majlis_info')
+          .select('*');
 
-    if (error) {
-      console.error("Mesej Ralat Supabase (Sila semak RLS):", error.message);
-      return;
+        if (error) {
+          console.error("Mesej Ralat Supabase (Sila semak RLS):", error.message);
+          return;
+        }
+
+        if (data && data.length > 0) {
+          const info = data[0];
+
+          // Kemaskini Nama & Cover Page
+          document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || 'Pengantin 1');
+          document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = info.nama_pengantin_2 || 'Pengantin 2');
+          document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = info.tarikh_ringkas || '');
+          document.getElementById('docTitle').innerText = `Walimatulurus ${info.nama_pengantin_1 || ''} & ${info.nama_pengantin_2 || ''}`;
+
+          document.getElementById('namaBapa').innerText = info.nama_bapa || '';
+          document.getElementById('namaIbu').innerText = info.nama_ibu || '';
+
+          document.getElementById('tarikhNikah').innerText = info.tarikh_nikah || '';
+          document.getElementById('masaNikah').innerText = info.masa_nikah || '';
+          document.getElementById('tarikhSanding').innerText = info.tarikh_sanding || '';
+          document.getElementById('masaSanding').innerText = info.masa_sanding || '';
+
+          document.getElementById('namaLokasi').innerText = info.nama_lokasi || '';
+          document.getElementById('alamatLokasi').innerText = info.alamat_lokasi || '';
+
+          if (info.embed_maps_url) document.getElementById('iframeMaps').src = info.embed_maps_url;
+          if (info.gmaps_url) document.getElementById('linkGmaps').href = info.gmaps_url;
+          if (info.waze_url) document.getElementById('linkWaze').href = info.waze_url;
+
+          document.getElementById('namaBank').innerText = info.nama_bank || '';
+          document.getElementById('accNumber').innerText = info.no_akaun_bank || '';
+          document.getElementById('namaAkaunBank').innerText = info.pemilik_akaun_bank || '';
+          
+          if (info.qr_code_url) {
+            const qrImg = document.getElementById('qrImage');
+            qrImg.src = info.qr_code_url;
+            qrImg.classList.remove('hidden');
+          }
+
+          document.getElementById('tarikhTunang').innerText = info.tarikh_tunang || '';
+          if (info.no_telefon) document.getElementById('linkTelefon').href = `tel:${info.no_telefon}`;
+          if (info.lagu_url) {
+            const audioSource = document.getElementById('musicSource');
+            audioSource.src = info.lagu_url;
+            audioSource.parentElement.load();
+          }
+
+          if (info.tarikh_iso_countdown) {
+            eventDateTarget = new Date(info.tarikh_iso_countdown).getTime();
+            initCountdown();
+          }
+        } else {
+          console.warn("Jadual 'majlis_info' wujud tapi tiada baris data!");
+        }
+      } catch (err) {
+        console.error("Gagal mengambil data:", err);
+      }
     }
 
-    if (data && data.length > 0) {
-      const info = data[0];
-
-      // Kemaskini Nama & Cover Page
-      document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || 'Pengantin 1');
-      document.querySelectorAll('.nama-pengantin-2').forEach(el => el.innerText = info.nama_pengantin_2 || 'Pengantin 2');
-      document.querySelectorAll('.tarikh-display').forEach(el => el.innerText = info.tarikh_ringkas || '');
-      document.getElementById('docTitle').innerText = `Walimatulurus ${info.nama_pengantin_1 || ''} & ${info.nama_pengantin_2 || ''}`;
-
-      document.getElementById('namaBapa').innerText = info.nama_bapa || '';
-      document.getElementById('namaIbu').innerText = info.nama_ibu || '';
-
-      document.getElementById('tarikhNikah').innerText = info.tarikh_nikah || '';
-      document.getElementById('masaNikah').innerText = info.masa_nikah || '';
-      document.getElementById('tarikhSanding').innerText = info.tarikh_sanding || '';
-      document.getElementById('masaSanding').innerText = info.masa_sanding || '';
-
-      document.getElementById('namaLokasi').innerText = info.nama_lokasi || '';
-      document.getElementById('alamatLokasi').innerText = info.alamat_lokasi || '';
-
-      if (info.embed_maps_url) document.getElementById('iframeMaps').src = info.embed_maps_url;
-      if (info.gmaps_url) document.getElementById('linkGmaps').href = info.gmaps_url;
-      if (info.waze_url) document.getElementById('linkWaze').href = info.waze_url;
-
-      document.getElementById('namaBank').innerText = info.nama_bank || '';
-      document.getElementById('accNumber').innerText = info.no_akaun_bank || '';
-      document.getElementById('namaAkaunBank').innerText = info.pemilik_akaun_bank || '';
-      
-      if (info.qr_code_url) {
-        const qrImg = document.getElementById('qrImage');
-        qrImg.src = info.qr_code_url;
-        qrImg.classList.remove('hidden');
-      }
-
-      document.getElementById('tarikhTunang').innerText = info.tarikh_tunang || '';
-      if (info.no_telefon) document.getElementById('linkTelefon').href = `tel:${info.no_telefon}`;
-      if (info.lagu_url) {
-        const audioSource = document.getElementById('musicSource');
-        audioSource.src = info.lagu_url;
-        audioSource.parentElement.load();
-      }
-
-      if (info.tarikh_iso_countdown) {
-        eventDateTarget = new Date(info.tarikh_iso_countdown).getTime();
-        initCountdown();
-      }
-    } else {
-      console.warn("Jadual 'majlis_info' wujud tapi tiada baris data!");
-    }
-  } catch (err) {
-    console.error("Gagal mengambil data:", err);
-  }
-}
     async function fetchGaleri() {
       try {
         const { data, error } = await supabase
