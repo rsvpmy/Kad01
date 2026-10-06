@@ -331,11 +331,20 @@
 
   <!-- JavaScript Logic & Integration Supabase -->
   <script>
-    // Tetapan Supabase (Isytihar skop global sekali sahaja guna 'var')
+    // Tetapan Supabase
     var SUPABASE_URL = 'https://cfpbpoagovtktyoyxmor.supabase.co';
     var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmcGJwb2Fnb3Z0a3R5b3l4bW9yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEyNjU4NTcsImV4cCI6MjEwNjg0MTg1N30.jHQXvZSiH_kAgOj6Dcn630hT2PIX70RLdaRxI3Q-qRY';
     
     var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Fungsi Ambil Parameter ID dari URL (e.g. ?id=1 atau ?id=2)
+    function getMajlisId() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      return id ? parseInt(id) : 1; // Default ke ID = 1 jika tiada ID dalam URL
+    }
+
+    const currentMajlisId = getMajlisId();
 
     let isPlaying = false;
     let eventDateTarget = null;
@@ -353,15 +362,17 @@
       try {
         const { data, error } = await supabase
           .from('majlis_info')
-          .select('*');
+          .select('*')
+          .eq('id', currentMajlisId)
+          .single();
 
         if (error) {
-          console.error("Mesej Ralat Supabase (Sila semak RLS):", error.message);
+          console.error("Mesej Ralat Supabase:", error.message);
           return;
         }
 
-        if (data && data.length > 0) {
-          const info = data[0];
+        if (data) {
+          const info = data;
 
           // Kemaskini Nama & Cover Page
           document.querySelectorAll('.nama-pengantin-1').forEach(el => el.innerText = info.nama_pengantin_1 || 'Pengantin 1');
@@ -406,20 +417,18 @@
             eventDateTarget = new Date(info.tarikh_iso_countdown).getTime();
             initCountdown();
           }
-        } else {
-          console.warn("Jadual 'majlis_info' wujud tapi tiada baris data!");
         }
       } catch (err) {
-        console.error("Gagal mengambil data:", err);
+        console.error("Gagal mengambil data majlis:", err);
       }
     }
 
     async function fetchGaleri() {
       try {
-        const { data, error } = await supabase
-          .from('galeri_tunang')
-          .select('*')
-          .order('susunan', { ascending: true });
+        let query = supabase.from('galeri_tunang').select('*');
+        
+        // Tapis mengikut majlis_id sekiranya kolum tersebut wujud di galeri_tunang
+        const { data, error } = await query.order('susunan', { ascending: true });
 
         if (error) throw error;
 
@@ -430,8 +439,12 @@
         dotsContainer.innerHTML = '';
 
         if (data && data.length > 0) {
-          totalSlides = data.length;
-          data.forEach((item, index) => {
+          // Tapis gambar jika ada kolum majlis_id
+          const filteredData = data.filter(item => !item.majlis_id || item.majlis_id === currentMajlisId);
+          const finalData = filteredData.length > 0 ? filteredData : data;
+
+          totalSlides = finalData.length;
+          finalData.forEach((item, index) => {
             // Tambah gambar slaid
             const slide = document.createElement('div');
             slide.className = 'min-w-full';
@@ -466,17 +479,16 @@
       const ucapan = document.getElementById("rsvpUcapan").value;
 
       try {
-        const { error } = await supabase
-          .from('rsvp')
-          .insert([
-            { 
-              nama: nama, 
-              status_kehadiran: status, 
-              bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa || 0), 
-              bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak || 0), 
-              ucapan: ucapan 
-            }
-          ]);
+        const payload = {
+          nama: nama, 
+          status_kehadiran: status, 
+          bil_dewasa: status === 'Tidak Hadir' ? 0 : parseInt(dewasa || 0), 
+          bil_kanak: status === 'Tidak Hadir' ? 0 : parseInt(kanak || 0), 
+          ucapan: ucapan,
+          majlis_id: currentMajlisId // Simpan mengikut majlis
+        };
+
+        const { error } = await supabase.from('rsvp').insert([payload]);
 
         if (error) throw error;
 
@@ -513,12 +525,14 @@
       const audio = document.getElementById("bgMusic");
       const musicIcon = document.getElementById("musicIcon");
       
-      audio.play().then(() => {
-        isPlaying = true;
-        musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
-      }).catch(error => {
-        console.log("Autoplay dihalang:", error);
-      });
+      if (audio.src && audio.src !== window.location.href) {
+        audio.play().then(() => {
+          isPlaying = true;
+          musicIcon.className = "fa-solid fa-compact-disc fa-spin text-sm";
+        }).catch(error => {
+          console.log("Autoplay dihalang:", error);
+        });
+      }
     }
 
     function toggleMusic() {
@@ -566,8 +580,10 @@
 
     function copyAccount() {
       const acc = document.getElementById("accNumber").innerText;
-      navigator.clipboard.writeText(acc);
-      alert("Nombor akaun berjaya disalin!");
+      if (acc && acc !== '-') {
+        navigator.clipboard.writeText(acc);
+        alert("Nombor akaun berjaya disalin!");
+      }
     }
 
     function toggleGuestCount() {
